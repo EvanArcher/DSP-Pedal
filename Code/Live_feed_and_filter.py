@@ -19,10 +19,11 @@ dev_index = 2  # device index
 # Load impulse response
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
-file_path = os.path.join(parent_dir, 'IR_Files', 'Erres_tube_radio.wav')
+file_path = os.path.join(parent_dir, 'IR_Files', 'GT-8 Tape Delay L.wav')
 
 ir_data, ir_rate = sf.read(file_path)
-
+if len(ir_data)> 96000:
+    ir_data = ir_data[0:96000]
 #ir_data = np.ones(1,dtype=np.float64) # put this in for no filter or add more ones for overdrive
 if len(ir_data.shape) > 1 and ir_data.shape[1] == 2:  # Check if impulse is stereo
     ir_data = np.mean(ir_data, axis=1)
