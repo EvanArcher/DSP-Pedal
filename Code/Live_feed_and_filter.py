@@ -13,17 +13,21 @@ from scipy.signal import resample
 import os
 
 samp_rate = 96000 # 192kHz sampling rate
-chunk = 4800*1  # 100ms of data at 192kHz
+chunk = 4800*3  # 100ms of data at 192kHz
 dev_index = 2  # device index
 
 # Load impulse response
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
-file_path = os.path.join(parent_dir, 'IR_Files', 'GT-8 Tape Delay L.wav')
+file_path = os.path.join(parent_dir, 'IR_Files', 'Vacuum cleaner tube.C.wav')
 
 ir_data, ir_rate = sf.read(file_path)
-if len(ir_data)> 96000:
-    ir_data = ir_data[0:96000]
+
+#%% 
+#Include the below lines to shorten ir_data for easier processing
+#if len(ir_data)> 96000:
+#    ir_data = ir_data[0:96000]
+#%%
 #ir_data = np.ones(1,dtype=np.float64) # put this in for no filter or add more ones for overdrive
 if len(ir_data.shape) > 1 and ir_data.shape[1] == 2:  # Check if impulse is stereo
     ir_data = np.mean(ir_data, axis=1)
@@ -55,7 +59,7 @@ def callback(indata, outdata, frames, time, status):
     
     # Ensure indata is a 1D array
     indata = indata.flatten()
-    
+
     # Zero-pad the input data and compute its FFT
     indata_fft = np.fft.fft(np.pad(indata, (0, chunk)))
     
