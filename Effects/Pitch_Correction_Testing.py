@@ -3,7 +3,7 @@
 """
 Created on Sun Sep 17 20:22:53 2023
 
-@author: pi
+@author: Evan Archer
 """
 
 import sounddevice as sd

@@ -10,16 +10,24 @@ import numpy as np
 import soundfile as sf
 import sounddevice as sd
 import time 
+import os
 
 # Load impulse audio file
-impulse_file_path = 'Fender_Twin_Reverb.wav'
+parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+
+file_path = os.path.join(parent_dir, 'IR_Files', 'Fender_Twin_Reverb.wav')
+
+impulse_file_path = file_path
 impulse_signal, impulse_sr = sf.read(impulse_file_path)
 try:
     if impulse_signal.shape[1] == 2: # check if impulse is dual signal
         impulse_signal = np.mean(impulse_signal, axis=1)
 except:
     None
-audio_file_path = "test_5_seconds.wav"
+parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+
+file_path = os.path.join(parent_dir, 'IR_Files', 'test_5_seconds.wav')
+audio_file_path = file_path
 audio_signal, sample_rate = sf.read(audio_file_path)
 clean_audio = audio_signal
 # Normalize impulse to peak amplitude of 1
