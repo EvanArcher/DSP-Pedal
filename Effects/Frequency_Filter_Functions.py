@@ -67,7 +67,7 @@ def BassBooster(signal, sample_rate, cutoff, boost_amount):
 low_pass_audio = LowPassFilter(test_audio, test_audio_rate, 1000)
 high_pass_audio = HighPassFilter(test_audio, test_audio_rate, 10000)
 band_pass_audio = BandPassFilter(test_audio, test_audio_rate, 2000, 10000)
-bass_boosted_audio = BassBooster(test_audio, test_audio_rate, 1000, 5)
+bass_boosted_audio = BassBooster(test_audio, test_audio_rate, 1000, 50)
 
 # Plot the audio signal over time
 plt.figure(figsize=(12, 4))
@@ -115,13 +115,13 @@ plt.grid()
 plt.show()
 
 
-sd.play(test_audio, test_audio_rate)
-sd.wait()  # Wait until the sound is finished playing
+# sd.play(test_audio, test_audio_rate)
+# sd.wait()  # Wait until the sound is finished playing
 # sd.play(low_pass_audio, test_audio_rate)
 # sd.wait()
 # sd.play(high_pass_audio, test_audio_rate)
 # sd.wait()
 # sd.play(band_pass_audio, test_audio_rate)
 # sd.wait()
-sd.play(bass_boosted_audio, test_audio_rate)
-sd.wait()
+# sd.play(bass_boosted_audio, test_audio_rate)
+# sd.wait()
