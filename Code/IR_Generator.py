@@ -17,6 +17,8 @@ import soundfile as sf
 from scipy.signal import resample
 import os
 
+
+# class used to generate a new IR based on the input IR's
 class IR_Generator:
     def __init__(self, *args):
         self.inputs = args
@@ -29,18 +31,19 @@ class IR_Generator:
         try:
             for IR in self.inputs[1:]: #loop through second entry to last
                 ir_data, ir_rate = sf.read(IR)
-                #ir_data = np.ones(1,dtype=np.float64) # put this in for no filter or add more ones for overdrive
                 if len(ir_data.shape) > 1 and ir_data.shape[1] == 2:  # Check if impulse is stereo
                     ir_data = np.mean(ir_data, axis=1)
                 normalized_impulse = ir_data / np.max(np.abs(ir_data))
-                # Resample IR based on our other IR sample rate
+                
+                # Resample IR based on our input IR sample rate
                 if initial_rate != ir_rate:
                     num_samples = int(len(normalized_impulse) * initial_rate / ir_rate)
                     ir_resampled = resample(normalized_impulse, num_samples)
                 else:
                     ir_resampled = normalized_impulse
                     
-                if len(ir_resampled)<len(initial_data): #check which signal needs to be padded
+                #check which signal needs to be padded
+                if len(ir_resampled)<len(initial_data):
                     desired_length = len(normalized_initial_impulse)
                     padded_impulse = np.pad(ir_resampled,(0, desired_length - len(ir_resampled)))
                     ir_resampled=padded_impulse
@@ -55,7 +58,7 @@ class IR_Generator:
                 initial_data_fft = np.fft.fft(normalized_initial_impulse)
                 combined_impulse_fft = ir_resampled_fft*initial_data_fft
                 combined_impulse = np.real(np.fft.ifft(combined_impulse_fft))
-                initial_data = combined_impulse
+                initial_data = combined_impulse #update IR to be combination of IR's
                 
                 print("Inputs:", ir_rate, IR)
         except: # if there is only 1 IR
@@ -64,15 +67,15 @@ class IR_Generator:
             return initial_data, initial_rate
         
 
-parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
+#Example of How to use it
+# First load wanted IR Files
+parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 tube_radio_IR= os.path.join(parent_dir, 'IR_Files', 'Erres_tube_radio.wav')
 Fender_Twin_Reverb_IR= os.path.join(parent_dir, 'IR_Files', 'Fender_Twin_Reverb.wav')
 Test1_IR = os.path.join(parent_dir, 'IR_Files', 'test1.wav')
 
-
-#example on how to use it
-#first initialize class by passing all wav files
+# Now initialize class by passing all wav files
 # next use the New_IR() method inside to generate our new Impulse response
 my_instance = IR_Generator(tube_radio_IR, Fender_Twin_Reverb_IR, Test1_IR) 
 

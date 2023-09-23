@@ -15,7 +15,7 @@ import os
 # Load impulse audio file
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
-file_path = os.path.join(parent_dir, 'IR_Files', 'Fender_Twin_Reverb.wav')
+file_path = os.path.join(parent_dir, 'IR_Files', 'GT-8 Hall 1 Reverb L.wav')
 
 impulse_file_path = file_path
 impulse_signal, impulse_sr = sf.read(impulse_file_path)
