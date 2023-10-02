@@ -17,6 +17,7 @@ from scipy.signal import resample
 import os
 import sys
 from IR_Generator import IR_Generator
+from Live_Audio_Class import LiveAudio
 
 from PyQt5.QtWidgets import (QApplication, QWidget, QPushButton, QVBoxLayout, 
                              QLabel, QCheckBox, QHBoxLayout, QScrollArea, QFrame)
@@ -45,7 +46,7 @@ class FileBrowser(QWidget):
         self.setLayout(mainLayout)
 
         self.setGeometry(200, 200, 300, 400)
-        self.setWindowTitle('File Browser')
+        self.setWindowTitle('EZAmps Guitar Pedal GUI')
         self.setWindowFlags(self.windowFlags() | Qt.WindowMaximizeButtonHint)  # Add maximize button
 
         self.generateIRButton = QPushButton('Generate IR', self)
@@ -109,7 +110,8 @@ class FileBrowser(QWidget):
             print("No files selected for IR generation!")
     #%% For live audio with our new IR      
     def PlayAudio(self,irdata,irrate):
-        print('stuff')
+        Live_Audio = LiveAudio(irdata,irrate)
+        Live_Audio.PlaySound() # play our live audio
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
