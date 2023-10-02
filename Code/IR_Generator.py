@@ -20,9 +20,10 @@ import os
 
 # class used to generate a new IR based on the input IR's
 class IR_Generator:
-    def __init__(self, *args):
+    def __init__(self, *args): #input all IR's
         self.inputs = args
         
+    # use method New_IR to generate them
     def New_IR(self):
         initial_data,initial_rate = sf.read(self.inputs[0]) #extract first entry
         if len(initial_data.shape) > 1 and initial_data.shape[1] == 2:  # Check if impulse is stereo
@@ -70,13 +71,13 @@ class IR_Generator:
 
 #Example of How to use it
 # First load wanted IR Files
-parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-tube_radio_IR= os.path.join(parent_dir, 'IR_Files', 'Erres_tube_radio.wav')
-Fender_Twin_Reverb_IR= os.path.join(parent_dir, 'IR_Files', 'Fender_Twin_Reverb.wav')
-Test1_IR = os.path.join(parent_dir, 'IR_Files', 'test1.wav')
+# parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+# tube_radio_IR= os.path.join(parent_dir, 'IR_Files', 'Erres_tube_radio.wav')
+# Fender_Twin_Reverb_IR= os.path.join(parent_dir, 'IR_Files', 'Fender_Twin_Reverb.wav')
+# Test1_IR = os.path.join(parent_dir, 'IR_Files', 'test1.wav')
 
-# Now initialize class by passing all wav files
-# next use the New_IR() method inside to generate our new Impulse response
-my_instance = IR_Generator(tube_radio_IR, Fender_Twin_Reverb_IR, Test1_IR) 
+# # Now initialize class by passing all wav files
+# # next use the New_IR() method inside to generate our new Impulse response
+# my_instance = IR_Generator(tube_radio_IR, Fender_Twin_Reverb_IR, Test1_IR) 
 
-IR_DATA,IR_RATE = my_instance.New_IR()
+# IR_DATA,IR_RATE = my_instance.New_IR()
