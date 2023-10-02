@@ -52,17 +52,18 @@ class IR_Generator:
                     desired_length = len(ir_resampled)
                     padded_impulse = np.pad(normalized_initial_impulse,(0, desired_length - len(normalized_initial_impulse)))
                     normalized_initial_impulse=padded_impulse
-                    
-                    
+                     
                 #put IR's together by convolution
                 ir_resampled_fft = np.fft.fft(ir_resampled)
                 initial_data_fft = np.fft.fft(normalized_initial_impulse)
                 combined_impulse_fft = ir_resampled_fft*initial_data_fft
                 combined_impulse = np.real(np.fft.ifft(combined_impulse_fft))
                 initial_data = combined_impulse #update IR to be combination of IR's
-                
-                print("Inputs:", ir_rate, IR)
+            if len(initial_data.shape) > 1 and initial_data.shape[1] == 2:  # Check if impulse is stereo
+                initial_data = np.mean(initial_data, axis=1)  
         except: # if there is only 1 IR
+            if len(initial_data.shape) > 1 and initial_data.shape[1] == 2:  # Check if impulse is stereo
+                initial_data = np.mean(initial_data, axis=1)
             return initial_data, initial_rate
         finally:
             return initial_data, initial_rate
