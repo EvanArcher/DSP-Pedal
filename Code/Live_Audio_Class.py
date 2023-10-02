@@ -1,16 +1,32 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Thu Sep  7 22:33:40 2023
+Created on Sun Oct  1 18:00:15 2023
 
-@author: pi
+@author: evana
 """
+
 
 import sounddevice as sd
 import numpy as np
 import soundfile as sf
 from scipy.signal import resample
 import os
+
+
+
+class LiveAudio:
+    def __init__(self, IR_Data, IR_Rate): #input IR and Rate
+        self.IR_Data = IR_Data
+        self.IR_Rate = IR_Rate
+        
+    def PlaySound(self):
+        samp_rate = 96000 # 192kHz sampling rate
+        chunk = 4800*3  # 100ms of data at 192kHz
+        dev_index = 2  # device index
+
+
+
 
 samp_rate = 96000 # 192kHz sampling rate
 chunk = 4800*3  # 100ms of data at 192kHz

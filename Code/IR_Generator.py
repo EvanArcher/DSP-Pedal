@@ -20,9 +20,10 @@ import os
 
 # class used to generate a new IR based on the input IR's
 class IR_Generator:
-    def __init__(self, *args):
+    def __init__(self, *args): #input all IR's
         self.inputs = args
         
+    # use method New_IR to generate them
     def New_IR(self):
         initial_data,initial_rate = sf.read(self.inputs[0]) #extract first entry
         if len(initial_data.shape) > 1 and initial_data.shape[1] == 2:  # Check if impulse is stereo

@@ -53,7 +53,7 @@ class FileBrowser(QWidget):
         mainLayout.addWidget(self.generateIRButton)
 
         self.show()
-
+        #%% Creates the buttons
     def addFileButtons(self, folder_path):
         from os import listdir
         from os.path import isfile, join
@@ -80,12 +80,12 @@ class FileBrowser(QWidget):
 
             # Initialize file selection dictionary
             self.fileSelection[file_name] = False
-
+    #%% grabs out selected IRs
     def updateFileSelection(self, file_name, state):
         self.fileSelection[file_name] = state == Qt.Checked
         selected_files = [key for key, value in self.fileSelection.items() if value]
         print("Selected files:", selected_files)
-
+    #%% Used to generate new IR and send it to live audio
     def generateIRClicked(self):
         print("Generate IR button clicked!")
         # Add your IR generation logic here
@@ -104,8 +104,12 @@ class FileBrowser(QWidget):
                 stored_files.append(os.path.join(parent_dir, 'IR_Files', files))
             my_instance = IR_Generator(*stored_files) # loads in all IR files to make our new one
             IR_DATA,IR_RATE=my_instance.New_IR()
+            self.PlayAudio(IR_DATA,IR_RATE) # now send IR to our audio so we can use it for live audio
         else:
             print("No files selected for IR generation!")
+    #%% For live audio with our new IR      
+    def PlayAudio(self,irdata,irrate):
+        print('stuff')
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
