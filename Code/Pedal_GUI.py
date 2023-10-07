@@ -21,7 +21,7 @@ from Live_Audio_Class import LiveAudio
 
 from PyQt5.QtWidgets import (QApplication, QWidget, QPushButton, QVBoxLayout, 
                              QLabel, QCheckBox, QHBoxLayout, QScrollArea, QFrame)
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt,QThread, pyqtSignal
 
 class FileBrowser(QWidget):
     def __init__(self):
@@ -86,6 +86,7 @@ class FileBrowser(QWidget):
         self.fileSelection[file_name] = state == Qt.Checked
         selected_files = [key for key, value in self.fileSelection.items() if value]
         print("Selected files:", selected_files)
+        self.audio_thread.audio.stop()
     #%% Used to generate new IR and send it to live audio
     def generateIRClicked(self):
         print("Generate IR button clicked!")
@@ -109,9 +110,31 @@ class FileBrowser(QWidget):
         else:
             print("No files selected for IR generation!")
     #%% For live audio with our new IR      
-    def PlayAudio(self,irdata,irrate):
-        Live_Audio = LiveAudio(irdata,irrate)
-        Live_Audio.PlaySound() # play our live audio
+    def PlayAudio(self, irdata, irrate):
+        self.audio_thread = AudioThread(irdata, irrate)
+        self.audio_thread.errorOccurred.connect(self.showError)
+        self.audio_thread.start()
+    
+    def showError(self, error_msg):
+        print(f"Error in audio thread: {error_msg}")
+        # You might also consider displaying the error in a QMessageBox or some other GUI element
+
+        
+        
+class AudioThread(QThread):
+    errorOccurred = pyqtSignal(str)  # Signal to emit any errors
+
+    def __init__(self, irdata, irrate):
+        super().__init__()
+        self.irdata = irdata
+        self.irrate = irrate
+        self.audio = LiveAudio(self.irdata, self.irrate)
+
+    def run(self):
+        try:
+            self.audio.PlaySound()
+        except Exception as e:
+            self.errorOccurred.emit(str(e))
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

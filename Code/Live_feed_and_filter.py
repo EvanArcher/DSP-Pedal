@@ -12,14 +12,14 @@ import soundfile as sf
 from scipy.signal import resample
 import os
 
-samp_rate = 96000 # 192kHz sampling rate
-chunk = 4800*3  # 100ms of data at 192kHz
+samp_rate = 44100 # 192kHz sampling rate
+chunk = 4800*2  # 100ms of data at 192kHz
 dev_index = 2  # device index
 
 # Load impulse response
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
-file_path = os.path.join(parent_dir, 'IR_Files', 'Vacuum cleaner tube.C.wav')
+file_path = os.path.join(parent_dir, 'IR_Files', 'Bike_n_Birds_in_Church7.wav')
 
 ir_data, ir_rate = sf.read(file_path)
 

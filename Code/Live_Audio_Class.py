@@ -19,10 +19,11 @@ class LiveAudio:
     def __init__(self, IR_Data, IR_Rate): #input IR and Rate
         self.IR_Data = IR_Data
         self.IR_Rate = IR_Rate
+        self.running = True # this is a flag
         
     def PlaySound(self):
-        samp_rate = 96000 # 192kHz sampling rate
-        chunk = 4800*3  # 100ms of data at 192kHz
+        samp_rate = 44100 # 192kHz sampling rate
+        chunk = 4800*2  # 100ms of data at 192kHz
         dev_index = 2  # device index
         
         # Resample IR based on our sample rate
@@ -41,12 +42,12 @@ class LiveAudio:
         IR_ffts = [np.fft.fft(np.pad(part, (0, 2*chunk - len(part)))) for part in ir_partitions]
 
 
-        # To store the tails of the convolution results
-        tails = [np.zeros(chunk) for _ in range(num_partitions)]
+        # To store the self.tails of the convolution results
+        self.tails = [np.zeros(chunk) for _ in range(num_partitions)]
 
         # Callback function to handle streaming
         def callback(indata, outdata, frames, time, status):
-            global tails
+            
             if status:
                 print(status)
             
@@ -65,10 +66,10 @@ class LiveAudio:
                 segment = np.real(np.fft.ifft(convolved_fft))
                 
                 # Add the current segment and its tail from the previous frame to the output_signal
-                output_signal += segment[:chunk] + tails[i]
+                output_signal += segment[:chunk] + self.tails[i]
                 
                 # Store the tail for the next chunk
-                tails[i] = segment[chunk:2*chunk]
+                self.tails[i] = segment[chunk:2*chunk]
             
             # Send the summed convolution to the output
             outdata[:] = output_signal.reshape(-1, 1)
@@ -76,11 +77,13 @@ class LiveAudio:
 
             
         with sd.Stream(samplerate=samp_rate, blocksize=chunk, device=dev_index, channels=1, callback=callback):
-            print("Press Enter to stop streaming...")
-            input()
+            while self.running:
+                None
+#            print("Press Enter to stop streaming...")
+#            input()
 
-        print("Streaming terminated.")
+#                print("Streaming terminated.")
 
 
-
-
+    def stop(self):
+        self.running = False
