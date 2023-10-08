@@ -11,12 +11,13 @@ import soundfile as sf
 import sounddevice as sd
 import time 
 import os
+import matplotlib.pyplot as plt
 
 
 # Load impulse audio file
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
-file_path = os.path.join(parent_dir, 'IR_Files', 'GT-8 Hall 1 Reverb L.wav')
+file_path = os.path.join(parent_dir, 'IR_Files', 'r1_omni.wav')
 
 impulse_file_path = file_path
 impulse_signal, impulse_sr = sf.read(impulse_file_path)
@@ -31,27 +32,42 @@ file_path = os.path.join(parent_dir, 'IR_Files', 'test_5_seconds.wav')
 audio_file_path = file_path
 audio_signal, sample_rate = sf.read(audio_file_path)
 clean_audio = audio_signal
-# Normalize impulse to peak amplitude of 1
+
+impulse_abs = abs(impulse_signal)
+noise_threshold = 10**(-2)
+
+# Find the indices where the audio signal exceeds the noise threshold
+above_threshold_indices = np.where(impulse_abs > noise_threshold)[0]
+
+if len(above_threshold_indices) > 0:
+    start_index = above_threshold_indices[0]
+    end_index = above_threshold_indices[-1]
+else:
+    # If no non-silent sections found, handle this case accordingly
+    start_index = 0
+    end_index = 0
+
+# Extract and concatenate the non-silent sections
+non_silent_sections = impulse_signal[start_index:end_index + 1]
 
 
-#start_time = time.time()
-#normalized_impulse = impulse_signal / np.max(np.abs(impulse_signal))
-#
-## Determine desired impulse response length (same as audio signal length)
-#desired_length = len(audio_signal)
-#
-## Pad or trim the impulse to match desired length
-#impulse_response = normalized_impulse[:desired_length]
-#
-## Perform convolution and apply the filter
-#filtered_audio = np.convolve(audio_signal, impulse_response, mode='same')
-#end_time = time.time()
-#print('Convolution total time is : ', end_time-start_time)
-#sd.play(clean_audio, sample_rate)
-#sd.wait()  # Wait until the sound is finished playing
-#sd.play(filtered_audio, sample_rate)
-#sd.wait()
+plt.plot(impulse_signal)
 
+# Add labels and a title
+plt.xlabel("data points")
+plt.ylabel("Y-axis Label")
+plt.title("impulse")
+
+# Display the plot
+plt.show()
+
+
+plt.plot(non_silent_sections)
+
+plt.xlabel("data points")
+plt.ylabel("Y-label")
+plt.title("impulse adjusted")
+plt.show()
 
 #%% FFT method
 
@@ -75,7 +91,7 @@ convolved_signal = np.real(np.fft.ifft(convolved_fft))
 
 end_time = time.time()
 print('Convolution using fft total time is : ', end_time-start_time)
-sd.play(clean_audio, sample_rate)
-sd.wait()  # Wait until the sound is finished playing
-sd.play(convolved_signal, sample_rate)
-sd.wait()
+# sd.play(clean_audio, sample_rate)
+# sd.wait()  # Wait until the sound is finished playing
+# sd.play(convolved_signal, sample_rate)
+# sd.wait()
